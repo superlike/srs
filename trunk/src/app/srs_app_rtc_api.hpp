@@ -34,6 +34,7 @@ class SrsRtcServer;
 class SrsRequest;
 class SrsSdp;
 class SrsRtcConnection;
+class SrsRtcUserConfig;
 
 class ISrsRtcServer
 {
@@ -41,11 +42,7 @@ public:
     ISrsRtcServer();
     virtual ~ISrsRtcServer();
 public:
-    virtual srs_error_t create_session(
-        SrsRequest* req, const SrsSdp& remote_sdp, SrsSdp& local_sdp, const std::string& mock_eip,
-        bool publish, bool dtls, bool srtp,
-        SrsRtcConnection** psession
-    ) = 0;
+    virtual srs_error_t create_session(SrsRtcUserConfig* ruc, SrsSdp& local_sdp, SrsRtcConnection** psession) = 0;
 };
 
 class SrsGoApiRtcPlay : public ISrsHttpHandler

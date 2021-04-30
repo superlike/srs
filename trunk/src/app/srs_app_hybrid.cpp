@@ -407,8 +407,7 @@ srs_error_t SrsHybridServer::on_thread_message(SrsThreadMessage* msg, SrsThreadP
 
     if (msg->id == (uint64_t)SrsThreadMessageIDRtcCreateSession) {
         SrsThreadMessageRtcCreateSession* s = (SrsThreadMessageRtcCreateSession*)msg->ptr;
-        err = adapter->rtc->create_session(s->req, s->remote_sdp, s->local_sdp, s->mock_eip,
-            s->publish, s->dtls, s->srtp, &s->session);
+        err = adapter->rtc->create_session(s->ruc, *s->local_sdp, &s->session);
 
         if (err != srs_success) {
             // TODO: FIXME: Response with error information?

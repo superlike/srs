@@ -437,11 +437,7 @@ private:
     virtual srs_error_t http_handle();
     srs_error_t listen_api();
 private:
-    virtual srs_error_t create_session(
-        SrsRequest* req, const SrsSdp& remote_sdp, SrsSdp& local_sdp, const std::string& mock_eip,
-        bool publish, bool dtls, bool srtp,
-        SrsRtcConnection** psession
-    );
+    virtual srs_error_t create_session(SrsRtcUserConfig* ruc, SrsSdp& local_sdp, SrsRtcConnection** psession);
 };
 
 // It's only used in master/srs thread.
@@ -451,15 +447,10 @@ extern SrsApiServer* _srs_api;
 struct SrsThreadMessageRtcCreateSession
 {
     // Input.
-    SrsRequest* req;
-    SrsSdp remote_sdp;
-    std::string mock_eip;
-    bool publish;
-    bool dtls;
-    bool srtp;
+    SrsRtcUserConfig* ruc;
 
     // Output.
-    SrsSdp local_sdp;
+    SrsSdp* local_sdp;
     // TODO: FIXME: It's not thread-safe.
     SrsRtcConnection* session;
 };

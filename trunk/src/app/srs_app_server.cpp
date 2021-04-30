@@ -1890,12 +1890,10 @@ srs_error_t SrsApiServer::listen_api()
     return err;
 }
 
-srs_error_t SrsApiServer::create_session(
-    SrsRequest* req, const SrsSdp& remote_sdp, SrsSdp& local_sdp, const std::string& mock_eip,
-    bool publish, bool dtls, bool srtp,
-    SrsRtcConnection** psession
-) {
+srs_error_t SrsApiServer::create_session(SrsRtcUserConfig* ruc, SrsSdp& local_sdp, SrsRtcConnection** psession) {
     srs_error_t err = srs_success;
+
+    SrsRequest* req = ruc->req_;
 
     // TODO: FIXME: Should update the hybrids for RTMP streams.
     // Serve all connections of a stream, which identified by url, by the same hybrid thread.
@@ -1936,13 +1934,8 @@ srs_error_t SrsApiServer::create_session(
     }
 
     SrsThreadMessageRtcCreateSession s;
-    s.req = req;
-    s.remote_sdp = remote_sdp;
-    s.local_sdp = local_sdp;
-    s.mock_eip = mock_eip;
-    s.publish = publish;
-    s.dtls = dtls;
-    s.srtp = srtp;
+    s.ruc = ruc;
+    s.local_sdp = &local_sdp;
     s.session = NULL;
 
     SrsThreadMessage m;
@@ -1967,7 +1960,6 @@ srs_error_t SrsApiServer::create_session(
     }
 
     // Covert to output params.
-    local_sdp = s.local_sdp;
     // TODO: FIMXE: Should never return it, for it's not thread-safe.
     *psession = s.session;
 
